@@ -9,7 +9,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    WithUserInfoChallenge,
+    WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.http import get_http_session
@@ -17,7 +17,7 @@ from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.captcha.models import CaptchaStage
 
 
-class CaptchaChallenge(WithUserInfoChallenge):
+class CaptchaChallenge(WithUserInfoMixin, Challenge):
     """Site public key"""
 
     site_key = CharField()

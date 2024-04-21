@@ -11,7 +11,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    WithUserInfoChallenge,
+    WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_sms.models import (
@@ -25,7 +25,7 @@ SESSION_KEY_SMS_DEVICE = "authentik/stages/authenticator_sms/sms_device"
 PLAN_CONTEXT_PHONE = "phone"
 
 
-class AuthenticatorSMSChallenge(WithUserInfoChallenge):
+class AuthenticatorSMSChallenge(WithUserInfoMixin, Challenge):
     """SMS Setup challenge"""
 
     # Set to true if no previous prompt stage set the phone number
