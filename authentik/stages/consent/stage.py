@@ -11,6 +11,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
@@ -38,14 +39,14 @@ class ConsentChallenge(WithUserInfoMixin, Challenge):
     header_text = CharField(required=False)
     permissions = ConsentPermissionSerializer(many=True)
     additional_permissions = ConsentPermissionSerializer(many=True)
-    component = CharField(default="ak-stage-consent")
+    component = DiscriminatorField("ak-stage-consent")
     token = CharField(required=True)
 
 
 class ConsentChallengeResponse(ChallengeResponse):
     """Consent challenge response, any valid response request is valid"""
 
-    component = CharField(default="ak-stage-consent")
+    component = DiscriminatorField("ak-stage-consent")
     token = CharField(required=True)
 
 

@@ -6,7 +6,6 @@ from uuid import UUID
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -31,6 +30,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -49,14 +49,14 @@ class AuthenticatorWebAuthnChallenge(WithUserInfoMixin, Challenge):
     """WebAuthn Challenge"""
 
     registration = JSONDictField()
-    component = CharField(default="ak-stage-authenticator-webauthn")
+    component = DiscriminatorField("ak-stage-authenticator-webauthn")
 
 
 class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     """WebAuthn Challenge response"""
 
     response = JSONDictField()
-    component = CharField(default="ak-stage-authenticator-webauthn")
+    component = DiscriminatorField("ak-stage-authenticator-webauthn")
 
     request: HttpRequest
     user: User

@@ -7,6 +7,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -25,13 +26,13 @@ class AuthenticatorStaticChallenge(WithUserInfoMixin, Challenge):
     """Static authenticator challenge"""
 
     codes = ListField(child=CharField())
-    component = CharField(default="ak-stage-authenticator-static")
+    component = DiscriminatorField("ak-stage-authenticator-static")
 
 
 class AuthenticatorStaticChallengeResponse(ChallengeResponse):
     """Pseudo class for static response"""
 
-    component = CharField(default="ak-stage-authenticator-static")
+    component = DiscriminatorField("ak-stage-authenticator-static")
 
 
 class AuthenticatorStaticStageView(ChallengeStageView):

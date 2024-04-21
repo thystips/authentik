@@ -9,6 +9,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -22,14 +23,14 @@ class CaptchaChallenge(WithUserInfoMixin, Challenge):
 
     site_key = CharField()
     js_url = CharField()
-    component = CharField(default="ak-stage-captcha")
+    component = DiscriminatorField("ak-stage-captcha")
 
 
 class CaptchaChallengeResponse(ChallengeResponse):
     """Validate captcha token"""
 
     token = CharField()
-    component = CharField(default="ak-stage-captcha")
+    component = DiscriminatorField("ak-stage-captcha")
 
     def validate_token(self, token: str) -> str:
         """Validate captcha token"""

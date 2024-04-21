@@ -9,6 +9,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -24,13 +25,13 @@ class AuthenticatorDuoChallenge(WithUserInfoMixin, Challenge):
     activation_barcode = CharField()
     activation_code = CharField()
     stage_uuid = CharField()
-    component = CharField(default="ak-stage-authenticator-duo")
+    component = DiscriminatorField("ak-stage-authenticator-duo")
 
 
 class AuthenticatorDuoChallengeResponse(ChallengeResponse):
     """Pseudo class for duo response"""
 
-    component = CharField(default="ak-stage-authenticator-duo")
+    component = DiscriminatorField("ak-stage-authenticator-duo")
 
 
 class AuthenticatorDuoStageView(ChallengeStageView):
