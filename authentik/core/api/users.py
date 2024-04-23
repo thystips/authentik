@@ -408,7 +408,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
 
     def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
+        return User.objects.all().prefetch_related("ak_groups")
 
     @extend_schema(
         parameters=[
