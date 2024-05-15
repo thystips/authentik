@@ -81,6 +81,66 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 To manage groups in NetBox custom social auth pipelines are required. To create them you have to create the `custom_pipeline.py` file in the NetBox directory with the following content.
 
+The path of the file in the Official Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
+
+#### After Netbox version 4.0.0
+
+```python
+from netbox.authentication import Group
+
+class AuthFailed(Exception):
+    pass
+
+def add_groups(response, user, backend, *args, **kwargs):
+    try:
+        groups = response['groups']
+    except KeyError:
+        pass
+
+    # Add all groups from oAuth token
+    for group in groups:
+        group, created = Group.objects.get_or_create(name=group)
+        user.groups.add(group)
+
+def remove_groups(response, user, backend, *args, **kwargs):
+    try:
+        groups = response['groups']
+    except KeyError:
+        # Remove all groups if no groups in oAuth token
+        user.groups.clear()
+        pass
+
+    # Get all groups of user
+    user_groups = [item.name for item in user.groups.all()]
+    # Get groups of user which are not part of oAuth token
+    delete_groups = list(set(user_groups) - set(groups))
+
+    # Delete non oAuth token groups
+    for delete_group in delete_groups:
+        group = Group.objects.get(name=delete_group)
+        user.groups.remove(group)
+
+
+def set_roles(response, user, backend, *args, **kwargs):
+    # Remove Roles temporary
+    user.is_superuser = False
+    user.is_staff = False
+    try:
+        groups = response['groups']
+    except KeyError:
+        # When no groups are set
+        # save the user without Roles
+        user.save()
+        pass
+
+    # Set roles is role (superuser or staff) is in groups
+    user.is_superuser = True if 'superusers' in groups else False
+    user.is_staff = True if 'staff' in groups else False
+    user.save()
+```
+
+#### Before Netbox version 4.0.0
+
 ```python
 from django.contrib.auth.models import Group
 
@@ -135,7 +195,7 @@ def set_roles(response, user, backend, *args, **kwargs):
     user.save()
 ```
 
-The path of the file in the Official Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
+#### Enable new pipeline
 
 To enable the pipelines, add the pipelines section to the netbox configuration file from above
 
